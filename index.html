@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Poetry Voice · Scriptorium</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+:root {
+  --vellum: #F5EDD6;
+  --vellum-deep: #EDE2C2;
+  --iron-gall: #2C1F0E;
+  --iron-gall-soft: #4A3A22;
+  --burnished-gold: #B8922A;
+  --burnished-gold-deep: #8E6E1A;
+  --verdigris: #4A6741;
+  --rubric: #8B2020;
+  --rubric-deep: #6A1818;
+
+  --bg: var(--vellum);
+  --bg-deep: var(--vellum-deep);
+  --ink: var(--iron-gall);
+  --ink-soft: var(--iron-gall-soft);
+  --gold: var(--burnished-gold);
+  --gold-deep: var(--burnished-gold-deep);
+  --green: var(--verdigris);
+  --red: var(--rubric);
+  --red-deep: var(--rubric-deep);
+}
+.dark {
+  --bg: #0F0C08;
+  --bg-deep: #1A140C;
+  --ink: #E8D9B5;
+  --ink-soft: #B8AB8A;
+  --gold: #D4AE3F;
+  --gold-deep: #B8922A;
+  --green: #8AB07F;
+  --red: #C44545;
+  --red-deep: #A23838;
+}
+
+html, body { background: var(--bg); color: var(--ink); }
+body {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 18px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Grain texture via SVG turbulence — always-present scriptorium atmosphere */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.17 0 0 0 0 0.12 0 0 0 0 0.05 0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.dark body::before { mix-blend-mode: screen; opacity: 0.08; }
+
+* { position: relative; }
+#app { position: relative; z-index: 2; }
+
+/* ── Typography roles ──────────────────────────────────────── */
+.font-display { font-family: 'Cinzel', serif; letter-spacing: 0.08em; }
+.font-poem    { font-family: 'IM Fell English', 'Cormorant Garamond', serif; }
+.font-body    { font-family: 'Cormorant Garamond', serif; }
+.font-mono    { font-family: ui-monospace, 'SF Mono', 'Cascadia Code', monospace; }
+
+/* Smallcaps utility */
+.smallcaps {
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+}
+
+/* Rubric — section titles in iron oxide red */
+.rubric { color: var(--red); font-family: 'Cinzel', serif; letter-spacing: 0.14em; }
+
+/* ── Ornamental rules ──────────────────────────────────────── */
+.ornament-rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--gold);
+  font-size: 0.85rem;
+}
+.ornament-rule::before,
+.ornament-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  color: var(--ink);
+  background-image: linear-gradient(90deg, var(--gold) 0%, var(--gold) 100%);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  background-position: left center;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  transition: background-size 320ms ease, color 320ms ease, box-shadow 320ms ease, border-color 320ms ease;
+  box-shadow: 0 1px 0 rgba(184,146,42,0.0);
+}
+.btn:hover {
+  background-size: 100% 100%;
+  color: #fff8e1;
+  border-color: var(--gold);
+  box-shadow: 0 6px 18px -10px rgba(184,146,42,0.6), inset 0 0 0 1px rgba(255,248,225,0.2);
+}
+.dark .btn:hover { color: #0F0C08; }
+.btn.btn-primary {
+  background-color: var(--ink);
+  color: var(--bg);
+}
+.btn.btn-primary:hover { color: var(--bg); }
+.btn.btn-ghost {
+  border-color: transparent;
+  color: var(--ink-soft);
+}
+.btn.btn-ghost:hover { color: var(--ink); }
+.btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+.btn[disabled]:hover { background-size: 0% 100%; color: var(--ink); border-color: var(--ink); }
+
+/* Pill toggle */
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--ink);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.toggle > button {
+  padding: 8px 14px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  background: transparent;
+  border-right: 1px solid var(--ink);
+  transition: background 200ms, color 200ms;
+}
+.toggle > button:last-child { border-right: none; }
+.toggle > button.on {
+  background: var(--ink);
+  color: var(--bg);
+}
+.toggle > button:not(.on):hover { color: var(--ink); }
+
+/* Card */
+.card {
+  border: 1px solid var(--ink);
+  background: var(--bg-deep);
+  padding: 28px 28px 24px;
+  transition: box-shadow 300ms ease, transform 300ms ease;
+  position: relative;
+}
+.card::before, .card::after {
+  content: "◆";
+  position: absolute;
+  color: var(--gold);
+  font-size: 0.6rem;
+  opacity: 0.7;
+}
+.card::before { top: 8px; left: 8px; }
+.card::after  { bottom: 8px; right: 8px; }
+.card:hover {
+  box-shadow: 0 18px 40px -22px rgba(184,146,42,0.5), 0 2px 0 var(--gold);
+  transform: translateY(-2px);
+}
+
+/* Poem text */
+.poem-text {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.4rem;
+  line-height: 1.85;
+  color: var(--ink);
+}
+.poem-grid {
+  display: grid;
+  grid-template-columns: [nums] 38px [poem] 1fr;
+  column-gap: 22px;
+}
+.poem-grid .verse-num {
+  grid-column: nums;
+  text-align: right;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  padding-top: 0.55em;
+  user-select: none;
+}
+.poem-grid .verse {
+  grid-column: poem;
+  cursor: pointer;
+  padding: 2px 6px;
+  margin-left: -6px;
+  border-radius: 1px;
+  transition: background 200ms, color 200ms;
+}
+.poem-grid .verse:hover { background: rgba(184,146,42,0.07); }
+.poem-grid .verse.active {
+  background: linear-gradient(90deg, rgba(184,146,42,0.18), rgba(184,146,42,0.03));
+  box-shadow: inset 3px 0 0 var(--gold);
+}
+.poem-grid .verse.spoken-by-user { color: var(--green); }
+
+/* Drop cap on first verse */
+.poem-grid .verse.first::first-letter {
+  font-family: 'Cinzel', serif;
+  font-size: 3.6em;
+  float: left;
+  line-height: 0.82;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--red);
+  font-weight: 700;
+}
+
+/* Word highlight */
+.word { transition: color 180ms, background 180ms; }
+.word.spoken { color: var(--gold-deep); }
+.word.current {
+  background: var(--gold);
+  color: var(--bg);
+  padding: 1px 3px;
+  margin: 0 -3px;
+  border-radius: 1px;
+}
+.dark .word.current { color: #0F0C08; }
+.word.correct { color: var(--green); }
+.word.wrong { color: var(--red); text-decoration: underline wavy var(--red); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.word.hidden-memo {
+  display: inline-block;
+  min-width: 2.2em;
+  border-bottom: 1px dashed var(--ink-soft);
+  color: transparent;
+  user-select: none;
+}
+.word.hidden-memo::before { content: "…"; color: var(--ink-soft); position: absolute; left: 50%; transform: translateX(-50%); top: 0; }
+.word.hidden-memo.revealed { color: var(--green); border-bottom-color: transparent; }
+.word.hidden-memo.revealed::before { content: ""; }
+
+/* Stanza break */
+.stanza-break { height: 1.6rem; }
+
+/* Section separator */
+.sep {
+  text-align: center;
+  color: var(--gold);
+  letter-spacing: 0.6em;
+  font-size: 0.7rem;
+  padding: 18px 0;
+}
+.sep::before { content: "·  ✦  ·"; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fade-in 0.6s ease forwards; }
+
+/* Language flag tab */
+.lang-tab {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  border-bottom: 2px solid transparent;
+  transition: color 220ms, border-color 220ms;
+}
+.lang-tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--gold);
+}
+.lang-tab:hover { color: var(--ink); }
+.lang-tab .glyph {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: 0;
+}
+
+/* Waveform decorative */
+.wave { display: inline-flex; align-items: flex-end; gap: 3px; height: 16px; }
+.wave > span {
+  width: 2px;
+  background: var(--gold);
+  border-radius: 1px;
+  animation: wave-bounce 1.2s ease-in-out infinite;
+}
+.wave > span:nth-child(1) { animation-delay: 0s; }
+.wave > span:nth-child(2) { animation-delay: .12s; }
+.wave > span:nth-child(3) { animation-delay: .24s; }
+.wave > span:nth-child(4) { animation-delay: .36s; }
+.wave > span:nth-child(5) { animation-delay: .48s; }
+.wave > span:nth-child(6) { animation-delay: .60s; }
+.wave > span:nth-child(7) { animation-delay: .72s; }
+.wave > span:nth-child(8) { animation-delay: .84s; }
+@keyframes wave-bounce {
+  0%, 100% { height: 3px; }
+  50% { height: 16px; }
+}
+.wave.idle > span { animation: none; height: 3px; opacity: 0.5; }
+
+/* Progress bar (top of poem) */
+.progress {
+  height: 2px;
+  background: var(--bg-deep);
+  border-bottom: 1px solid rgba(184,146,42,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.progress > i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+  transition: width 250ms ease;
+}
+
+/* Glossary tooltip */
+.gloss-pop {
+  position: absolute;
+  z-index: 50;
+  background: var(--bg-deep);
+  border: 1px solid var(--ink);
+  padding: 14px 16px;
+  width: 280px;
+  font-size: 0.92rem;
+  box-shadow: 0 18px 40px -16px rgba(0,0,0,0.35);
+}
+.gloss-pop::before {
+  content: "❧";
+  position: absolute;
+  top: -10px; left: 14px;
+  background: var(--bg);
+  color: var(--gold);
+  padding: 0 6px;
+  font-size: 0.95rem;
+}
+
+/* Side panel */
+.panel {
+  border: 1px solid var(--ink);
+  padding: 22px 22px 18px;
+  background: var(--bg-deep);
+  font-family: 'Cormorant Garamond', serif;
+}
+.panel h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel h4::before { content: "❧"; color: var(--gold); font-style: normal; }
+
+/* Pronunciation card */
+.pron-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+  padding: 8px 0;
+  border-bottom: 1px dotted rgba(184,146,42,0.35);
+  font-size: 1.02rem;
+}
+.pron-row:last-child { border-bottom: none; }
+.pron-row .ipa {
+  font-family: ui-monospace, monospace;
+  color: var(--green);
+  font-size: 0.92rem;
+}
+
+/* Score chip */
+.score-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+.score-chip b {
+  font-size: 1.05rem;
+  color: var(--gold);
+}
+
+/* Tag */
+.tag {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  padding: 3px 9px;
+  border: 1px solid var(--ink);
+  text-transform: uppercase;
+}
+.tag.gold { color: var(--gold); border-color: var(--gold); }
+.tag.green { color: var(--green); border-color: var(--green); }
+.tag.red { color: var(--red); border-color: var(--red); }
+
+/* Number ticker */
+.numeral {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  font-feature-settings: "lnum";
+}
+
+/* Mode dock */
+.mode-dock {
+  display: inline-flex;
+  border: 1px solid var(--ink);
+  background: var(--bg-deep);
+}
+.mode-dock > button {
+  padding: 10px 16px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-right: 1px solid var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.mode-dock > button:last-child { border-right: none; }
+.mode-dock > button.on { background: var(--ink); color: var(--bg); }
+.mode-dock > button:hover:not(.on) { color: var(--ink); }
+
+/* Theme toggle button */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+.theme-toggle:hover { color: var(--gold); }
+.theme-toggle svg { stroke: currentColor; fill: none; }
+
+/* Mobile */
+@media (max-width: 760px) {
+  .poem-grid { grid-template-columns: 1fr; }
+  .poem-grid .verse-num { display: none; }
+  .poem-text { font-size: 1.2rem; }
+  .poem-grid .verse.first::first-letter { font-size: 2.6em; }
+  .card { padding: 22px 18px 18px; }
+}
+
+/* Hide scrollbar where not needed */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Misc */
+.divider-v { width: 1px; background: var(--ink); opacity: 0.25; }
+
+/* Form inputs (custom poem editor) */
+.cust-input {
+  display: block;
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  padding: 9px 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.02rem;
+  outline: none;
+  transition: border-color 200ms, box-shadow 200ms;
+}
+.cust-input:focus {
+  border-color: var(--gold);
+  box-shadow: inset 0 0 0 1px var(--gold);
+}
+.cust-input::placeholder { color: var(--ink-soft); opacity: 0.6; font-style: italic; }
+textarea.cust-input { line-height: 1.55; }
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="hooks.jsx"></script>
+<script type="text/babel" src="components.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
