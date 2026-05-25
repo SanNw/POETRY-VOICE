@@ -324,33 +324,35 @@ function PoemScreen(props) {
         <i style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-5 sm:py-8">
         {/* Top bar */}
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-3">
           <button onClick={onBack} className="theme-toggle" style={{ color: 'var(--ink-soft)' }}>
             ← &nbsp;<span className="smallcaps">{UI.back}</span>
           </button>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <span className="tag gold">{LANG_LABELS[poem.lang].glyph} · {poem.locale}</span>
-            <span className="tag">{ERAS[poem.era] || ""}</span>
-            <span className="tag">{poem.year}</span>
+            {ERAS[poem.era] && <span className="tag">{ERAS[poem.era]}</span>}
+            {poem.year && <span className="tag">{poem.year}</span>}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 lg:gap-10">
           {/* Main column */}
-          <div>
-            <div className="mb-2 rubric text-[0.78rem]">❧ {poem.author.toUpperCase()}</div>
-            <h2 className="font-display text-[1.8rem] md:text-[2.2rem] font-semibold leading-tight mb-1" style={{ color: 'var(--ink)' }}>
+          <div className="min-w-0">
+            <div className="mb-2 rubric text-[0.72rem] sm:text-[0.78rem]">❧ {poem.author.toUpperCase()}</div>
+            <h2 className="font-display text-[1.45rem] sm:text-[1.8rem] md:text-[2.2rem] font-semibold leading-tight mb-1" style={{ color: 'var(--ink)' }}>
               {poem.title}
             </h2>
-            <div className="font-poem italic text-[1.1rem] mb-6" style={{ color: 'var(--ink-soft)' }}>
-              {poem.subtitle}
-            </div>
+            {poem.subtitle && (
+              <div className="font-poem italic text-[0.98rem] sm:text-[1.1rem] mb-4 sm:mb-6" style={{ color: 'var(--ink-soft)' }}>
+                {poem.subtitle}
+              </div>
+            )}
 
             <div className="sep" />
 
-            <div className="my-8">
+            <div className="my-6 sm:my-8">
               <PoemViewer
                 poem={poem}
                 currentLineIdx={tts.currentLineIdx}
@@ -365,11 +367,11 @@ function PoemScreen(props) {
 
             <div className="sep" />
 
-            <div className="text-[0.78rem] smallcaps" style={{ color: 'var(--ink-soft)' }}>
+            <div className="text-[0.72rem] sm:text-[0.78rem] smallcaps" style={{ color: 'var(--ink-soft)' }}>
               ❧ {UI.glossaryHint}
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <AudioControls
                 isSpeaking={tts.isSpeaking}
                 isPaused={tts.isPaused}
@@ -388,7 +390,7 @@ function PoemScreen(props) {
               />
             </div>
 
-            <div className="mt-6">
+            <div className="mt-5 sm:mt-6">
               <RecordingPanel
                 supported={srSupported}
                 isListening={srListening}
@@ -402,15 +404,17 @@ function PoemScreen(props) {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <aside className="space-y-6">
+          {/* Sidebar (drops below main on mobile) */}
+          <aside className="space-y-5 sm:space-y-6 min-w-0">
             <AboutPanel
               poem={poem}
               sessions={sessions[poem.id]}
               isFav={!!favs[poem.id]}
               onFav={() => toggleFav(poem.id)}
             />
-            <PronunciationPanel poem={poem} />
+            {poem.pronunciation && poem.pronunciation.length > 0 && (
+              <PronunciationPanel poem={poem} />
+            )}
 
             <div className="panel">
               <h4>{UI.progress}</h4>

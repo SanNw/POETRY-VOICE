@@ -2,7 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#F5EDD6" />
+<meta name="theme-color" content="#0F0C08" media="(prefers-color-scheme: dark)" />
 <title>Poetry Voice · Scriptorium</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -480,11 +482,81 @@ body::before {
 
 /* Mobile */
 @media (max-width: 760px) {
+  body { font-size: 17px; }
   .poem-grid { grid-template-columns: 1fr; }
   .poem-grid .verse-num { display: none; }
+  .poem-grid .verse-num,
+  .poem-grid .verse { grid-column: auto; }
   .poem-text { font-size: 1.2rem; }
   .poem-grid .verse.first::first-letter { font-size: 2.6em; }
   .card { padding: 22px 18px 18px; }
+  .panel { padding: 18px 16px 14px; }
+
+  /* Buttons — keep readable but shorter padding */
+  .btn { padding: 9px 14px; font-size: 0.72rem; letter-spacing: 0.1em; }
+  .toggle > button { padding: 7px 11px; font-size: 0.64rem; letter-spacing: 0.12em; }
+
+  /* Mode dock wraps and grows on small screens */
+  .mode-dock {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .mode-dock > button {
+    border-right: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 11px 10px;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    justify-content: center;
+  }
+  .mode-dock > button:nth-child(2n) { border-right: none; }
+  .mode-dock > button:nth-last-child(-n+2) { border-bottom: none; }
+
+  /* Language tabs collapse to glyph-only pills */
+  .lang-tab { padding: 7px 10px; gap: 6px; font-size: 0.7rem; }
+  .lang-tab .lang-name { display: none; }
+
+  /* Header chrome */
+  .theme-toggle { font-size: 0.6rem; letter-spacing: 0.15em; }
+  .divider-v { display: none; }
+
+  /* Glossary popover — fluid width on phones */
+  .gloss-pop {
+    width: calc(100vw - 28px);
+    max-width: 320px;
+    left: 14px !important;
+  }
+
+  /* Pronunciation rows stack */
+  .pron-row { grid-template-columns: 1fr; gap: 2px; padding: 9px 0; }
+  .pron-row .ipa { text-align: left; }
+
+  /* Sticky progress bar a touch thicker for thumb-friendly feedback */
+  .progress { height: 3px; }
+
+  /* Smaller separator on tight screens */
+  .sep { padding: 12px 0; letter-spacing: 0.4em; }
+  .ornament-rule { gap: 10px; font-size: 0.78rem; }
+
+  /* Modal full-bleed on phones */
+  .pv-modal-form {
+    max-width: 100%;
+    border-left: none;
+    border-right: none;
+    padding: 22px 18px 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  body { font-size: 16.5px; }
+  .poem-text { font-size: 1.12rem; }
+  .poem-grid .verse.first::first-letter { font-size: 2.3em; }
+  .lang-tab { padding: 6px 8px; }
+  .lang-tab .glyph { font-size: 1rem; }
+  .btn { padding: 8px 12px; font-size: 0.68rem; }
+  .card { padding: 18px 14px 14px; }
+  .panel { padding: 16px 14px 12px; }
 }
 
 /* Hide scrollbar where not needed */

@@ -58,10 +58,11 @@ function LanguageTabs({ value, onChange }) {
           className={"lang-tab " + (value === k ? "active" : "")}
           role="tab"
           aria-selected={value === k}
+          aria-label={LANG_LABELS[k].name}
           onClick={() => onChange(k)}
         >
           <span className="glyph">{LANG_LABELS[k].glyph}</span>
-          <span>{LANG_LABELS[k].name}</span>
+          <span className="lang-name">{LANG_LABELS[k].name}</span>
         </button>
       ))}
     </div>
@@ -81,22 +82,22 @@ function OrnamentRule({ children }) {
 function Header({ lang, setLang, dark, setDark, totalSessions }) {
   return (
     <header className="border-b" style={{ borderColor: 'var(--ink)', borderBottomWidth: 1 }}>
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-6 flex items-start justify-between gap-6 flex-wrap">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-4 sm:py-6 flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0 flex-1">
-          <h1 className="font-display text-[1.5rem] md:text-[1.85rem] font-semibold leading-tight" style={{ color: 'var(--ink)' }}>
+          <h1 className="font-display text-[1.25rem] sm:text-[1.5rem] md:text-[1.85rem] font-semibold leading-tight" style={{ color: 'var(--ink)' }}>
             POETRY ·<span style={{ color: 'var(--red)' }}> VOICE</span>
           </h1>
-          <div className="mt-1 font-body italic text-[0.95rem]" style={{ color: 'var(--ink-soft)' }}>
+          <div className="mt-1 font-body italic text-[0.88rem] sm:text-[0.95rem]" style={{ color: 'var(--ink-soft)' }}>
             {UI.appSubtitle}
           </div>
-          <div className="mt-2 flex items-center gap-3 text-[0.74rem]" style={{ color: 'var(--ink-soft)' }}>
+          <div className="mt-2 flex items-center gap-2 sm:gap-3 text-[0.7rem] sm:text-[0.74rem] flex-wrap" style={{ color: 'var(--ink-soft)' }}>
             <span className="numeral">{String(totalSessions).padStart(3, '0')}</span>
             <span className="smallcaps">leituras no códice</span>
             <span style={{ color: 'var(--gold)' }}>·  ✦  ·</span>
             <span className="smallcaps">EN · PT · ES</span>
           </div>
         </div>
-        <div className="flex items-center gap-5 flex-wrap shrink-0">
+        <div className="flex items-center gap-3 sm:gap-5 flex-wrap shrink-0">
           <LanguageTabs value={lang} onChange={setLang} />
           <span className="divider-v self-stretch" />
           <ThemeToggle dark={dark} setDark={setDark} />
@@ -532,30 +533,30 @@ function LibraryScreen({ lang, poems, openPoem, favs, toggleFav, deletePoem, ses
 
   return (
     <div data-screen-label={`01 Library · ${lang.toUpperCase()}`}>
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-7 md:py-10">
         <div className="mb-6 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <div className="rubric text-[0.8rem] mb-2">❧ {UI.libraryTitle.toUpperCase()}</div>
-            <h2 className="font-display text-[2.2rem] md:text-[2.6rem] font-semibold leading-none">
+            <div className="rubric text-[0.75rem] sm:text-[0.8rem] mb-2">❧ {UI.libraryTitle.toUpperCase()}</div>
+            <h2 className="font-display text-[1.7rem] sm:text-[2.2rem] md:text-[2.6rem] font-semibold leading-none">
               <span style={{ fontStyle: 'italic', fontFamily: "'IM Fell English', serif", letterSpacing: 0 }}>
                 {LANG_LABELS[lang].name}
               </span>
             </h2>
-            <div className="font-body italic text-[1.05rem] mt-2" style={{ color: 'var(--ink-soft)' }}>
+            <div className="font-body italic text-[0.96rem] sm:text-[1.05rem] mt-2" style={{ color: 'var(--ink-soft)' }}>
               {UI.librarySubtitle}
             </div>
           </div>
           <div className="text-right">
-            <div className="numeral text-[2.4rem] leading-none" style={{ color: 'var(--gold)' }}>
+            <div className="numeral text-[1.9rem] sm:text-[2.4rem] leading-none" style={{ color: 'var(--gold)' }}>
               {String(filtered.length).padStart(2, '0')}
             </div>
-            <div className="text-[0.7rem] smallcaps" style={{ color: 'var(--ink-soft)' }}>{UI.poemsCount}</div>
+            <div className="text-[0.65rem] sm:text-[0.7rem] smallcaps" style={{ color: 'var(--ink-soft)' }}>{UI.poemsCount}</div>
           </div>
         </div>
 
         <div className="sep" />
 
-        <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
+        <div className="mb-5 sm:mb-6 flex items-center justify-between gap-3 flex-wrap">
           <AuthorChips poems={poems} value={authorFilter} onChange={setAuthorFilter} />
           {onAddClick && (
             <button className="btn" onClick={onAddClick}>
@@ -622,11 +623,11 @@ function AddPoemModal({ initial, onClose, onSave }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(15,12,8,0.55)" }} onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4" style={{ background: "rgba(15,12,8,0.55)" }} onClick={onClose}>
       <form
         onSubmit={submit}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl panel"
+        className="w-full max-w-2xl panel pv-modal-form"
         style={{ maxHeight: "92vh", overflow: "auto" }}
       >
         <div className="flex items-center justify-between mb-5">
